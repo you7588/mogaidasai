@@ -10,7 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170112050827) do
+ActiveRecord::Schema.define(version: 20170127063005) do
+
+  create_table "chat_rooms", force: :cascade do |t|
+    t.string   "title"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_chat_rooms_on_user_id"
+  end
+
+  create_table "job_relationships", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "job_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "jobs", force: :cascade do |t|
     t.string   "title"
@@ -21,6 +36,29 @@ ActiveRecord::Schema.define(version: 20170112050827) do
     t.integer  "wage_lower_bound"
     t.string   "contact_email"
     t.boolean  "is_hidden",        default: true
+    t.string   "city"
+    t.string   "company"
+    t.string   "category"
+    t.integer  "user_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.text     "body"
+    t.integer  "user_id"
+    t.integer  "chat_room_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["chat_room_id"], name: "index_messages_on_chat_room_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
+  end
+
+  create_table "resumes", force: :cascade do |t|
+    t.integer  "job_id"
+    t.integer  "user_id"
+    t.text     "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "attachment"
   end
 
   create_table "users", force: :cascade do |t|
@@ -37,6 +75,8 @@ ActiveRecord::Schema.define(version: 20170112050827) do
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
     t.boolean  "is_admin",               default: false
+    t.boolean  "is_candidate",           default: true
+    t.string   "timestamp"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

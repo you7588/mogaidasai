@@ -1,24 +1,30 @@
-<div class="col-md-12 col-lg-10 col-lg-offset-1">
-  <h4>Better job, better life</h4>
-  <hr>
-  <div class="pull-right">
-    <%= link_to("Add a Job", new_job_path, :class => "btn btn-primary btn-sm") %>
-  </div>
-  <br><br>
-  <table class="table table-boldered">
-    <% @jobs.each do |job| %>
-      <tr>
-        <td>
-          <%= link_to(job.title, job_path(job)) %>
-        </td>
-        <td>
-          <%= link_to("Edit", edit_job_path(job)) %> |
-          <%= link_to("Destroy", job_path(job), :method => :delete, :data => { :confirm => "Are you sure?" }) %>
-        </td>
-        <td>
-          <%= job.created_at %>
-        </td>
-      </tr>
+<div class="container-fluid jobs-show-page">
+  <div class="col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+    <div class="dropdown clearfix pull-right">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuDivider" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="true">Filter
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuDevider">
+        <li>
+          <%= link_to("Lower Salary", jobs_path(:order => "by_lower_bound")) %>
+        </li>
+        <li>
+          <%= link_to("Upper Salary", jobs_path(:order => "by_upper_bound")) %>
+        </li>
+        <li>
+          <%= link_to("Publish Time", jobs_path) %>
+        </li>
+      </ul>
+    </div><br>
+    <% if user_signed_in? && current_user.admin? %>
+      <%= link_to(content_tag(:i, " Back to Admin", class: "fa fa-reply-all"), admin_jobs_path) %>
     <% end %>
-  </table>
+    <br><br><br>
+      <%= render :partial => "jobs_item", :collection => @jobs, :as => :job %>
+      <div class="text-center">
+        <%= will_paginate @jobs, renderer: BootstrapPagination::Rails %>
+      </div>
+
+  </div>
 </div>
